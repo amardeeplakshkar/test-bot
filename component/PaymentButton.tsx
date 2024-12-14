@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from 'react';
 import WebApp from '@twa-dev/sdk';
 
