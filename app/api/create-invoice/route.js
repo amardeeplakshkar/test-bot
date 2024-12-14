@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { Bot } from 'node-telegram-bot-api';
+import TelegramBot from 'node-telegram-bot-api'; // Correct import
 
 // Replace with your Telegram bot token
 const botToken = "7535642128:AAFC-i7Dx414ixZFYiov7jlt0ZGhbnmdioQ";
-const botApi = new Bot(botToken, { polling: false });
+const botApi = new TelegramBot(botToken, { polling: false });
 
-export async function POST(request) {
+export async function POST() {
   try {
     const invoiceLink = await botApi.createInvoiceLink(
       "Title", // Title of the item
