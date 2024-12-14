@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
 import { useState } from 'react';
-import WebApp from '@twa-dev/sdk';
+import dynamic from 'next/dynamic';
+
+const WebApp = dynamic(() => import('@twa-dev/sdk'), { ssr: false });
 
 const PaymentButton = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const getInvoiceLink = async () => {
     try {
@@ -22,12 +25,14 @@ const PaymentButton = () => {
       const data = await response.json();
       return data.invoiceLink;
     } catch (error) {
+      setError('Failed to generate payment link. Please try again.');
       console.error('Error fetching invoice link:', error);
       return null;
     }
   };
 
   const openInvoice = async () => {
+    setError(null); // Clear previous errors
     setLoading(true);
     const invoiceLink = await getInvoiceLink();
     setLoading(false);
@@ -45,9 +50,17 @@ const PaymentButton = () => {
   };
 
   return (
-    <button onClick={openInvoice} disabled={loading}>
-      {loading ? 'Processing...' : 'Pay with Stars'}
-    </button>
+    <div>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button
+        onClick={openInvoice}
+        disabled={loading}
+        aria-busy={loading}
+        aria-label={loading ? 'Processing payment' : 'Pay with Stars'}
+      >
+        {loading ? 'Processing...' : 'Pay with Stars'}
+      </button>
+    </div>
   );
 };
 
